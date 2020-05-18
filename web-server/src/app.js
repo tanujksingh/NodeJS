@@ -10,6 +10,7 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 const viewsPath = path.join(__dirname, '../templates/views');
 const partialsPath = path.join(__dirname, '../templates/partials');
 const app = express();
+const port = process.env.PORT || 3000;
 
 //setup handlebars
 app.set('view engine','hbs');
@@ -29,14 +30,6 @@ app.get('', (req, res) => {
 app.get('/about', (req, res) => {
     res.render('about', {
         title : 'About',
-        name: 'Tanuj'
-    });
-});
-
-app.get('/help', (req, res) => {
-    res.render('help', {
-        mesg : 'Need some Help',
-        title : 'Help',
         name: 'Tanuj'
     });
 });
@@ -68,29 +61,15 @@ app.get('/weather', (req, res) => {
             });
         }    
     });
-
-    // res.send({
-    //     weather : 'hyderabad',
-    //     title : 'Weather App',
-    //     address : req.query.address,
-    //     temperature: temperature
-    // });
 });
 
+//sample endpoint url
 app.get('/products', (req, res) => {
     if(!req.query.search){
         return res.send({'error' : 'Search term must be provided'});
     }
     res.send({
         products: []
-    });
-});
-
-app.get('/help/*', (req, res) => {
-    res.render('errorpage', {
-        errorMsg : "Help article not found",
-        title : '',
-        name: 'Tanuj'
     });
 });
 
@@ -102,7 +81,7 @@ app.get('*', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log("Server started at port 3000!");
+//Only for running locally
+app.listen(port, () => {
+    console.log("Server started at port "+ port +"!");
 });
-
