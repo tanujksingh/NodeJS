@@ -1,0 +1,85 @@
+//CRUD - Create : Read : Update : Delete
+
+const {MongoClient, ObjectID} = require('mongodb');
+
+//Generating document ID
+const id = new ObjectID();
+console.log(id);
+console.log(id.id.length);
+console.log(id.toHexString().length);
+console.log(id.getTimestamp());
+
+const connectionURL = 'mongodb://127.0.0.1:27017';
+const databaseName = 'task-manager';
+
+MongoClient.connect(connectionURL, {useUnifiedTopology : true}, (error, client) => {
+    if(error)
+        return console.log('Unable to connect to DB!');    
+    console.log('Connected...!!!');
+    const db = client.db(databaseName);
+
+    //Deleteing a document
+    db.collection('users').deleteOne({_id: new ObjectID("5ed0ce31a5c6aa18bd754067")})
+    .then((result) => {
+        console.log("result > " + result);
+    })
+    .catch((error) => {
+        console.log("error > " + error);
+    });
+
+    //Update one document
+    db.collection('users').updateOne({_id: new ObjectID("5ed0ce31a5c6aa18bd754067")},{
+        $inc: {
+            age: 1
+        }
+    }).then((result) => {
+            console.log('result ' + result.matchedCount);
+        }
+    ).catch((error) => {
+            console.log('error ' + error);
+        }
+    );
+
+    //Find one User
+    db.collection('users').findOne({name: 'tanuj'}, (error, user) => {
+        if(error) return console.log('Unable to find user');
+        console.log(user);
+    });
+
+    //Find many
+    db.collection('users').find({age: '28'}).toArray((error, users) => {
+        if(error) return console.log('Unable to find user');
+        console.log(users);
+    });
+
+    db.collection('tasks').findOne({_id: new ObjectID("5ed0caf9b27b39089bed3c40")}, (error, task) => {
+        if(error)return console.log('running task error');
+        console.log(task);
+    });
+
+    db.collection('tasks').find({'completed': false}).toArray((error, task) => {
+        if(error)return console.log('running task error');
+        console.log(task);
+    });
+    
+    //Insert one
+    db.collection('users').insertOne({
+        _id: id,
+        'name' : 'Kumar',
+        'age' : '27'
+    }, (error, result) => {
+        if(error) return console.log('Unable to insert record');
+        console.log(result.ops);
+    });
+
+    //InsertMany
+    db.collection('tasks').insertMany([
+        {description: 'Clean the house', completed: true},
+        {description: 'Review inspection', completed: false},
+        {description: 'Pot plants', completed: false},
+    ], (error, result) => {
+        if(error) return console.log('Unable to insert record!');
+        console.log(result.ops);
+    });
+
+});
