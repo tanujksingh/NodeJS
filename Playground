@@ -1,0 +1,10 @@
+//Hashing function
+const bcrypt = require('bcryptjs');
+const hashPassword = async () => {
+    const password = "Tanuj@123";
+    const hashed = await bcrypt.hash(password,8);
+    console.log(hashed);
+    const isMatch = await bcrypt.compare('Tanuj', hashed);
+    console.log(isMatch);
+}
+hashPassword();
